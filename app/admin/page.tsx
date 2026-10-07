@@ -1,0 +1,1 @@
+export default function Admin(){return <div style={{padding:30}}><h1>SUPER ADMIN - vaantoragrowth@gmail.com</h1><p>Only you can access this. All users data here via /api/admin/users?admin=vaantoragrowth@gmail.com</p></div>}
