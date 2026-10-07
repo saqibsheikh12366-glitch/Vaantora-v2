@@ -1,0 +1,40 @@
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+generator client { provider = "prisma-client-js" }
+model Workspace {
+  id String @id @default(cuid())
+  name String
+  email String @unique
+  apiKey String @unique @default(cuid())
+  plan String @default("FREE_TRIAL")
+  trialEndsAt DateTime?
+  isAdmin Boolean @default(false)
+  customers Customer[]
+  conversations Conversation[]
+  connections Connection[]
+  createdAt DateTime @default(now())
+}
+model Customer {
+  id String @id @default(cuid())
+  workspaceId String
+  workspace Workspace @relation(fields:[workspaceId], references:[id])
+  name String? phone String? email String?
+  source String @default("website")
+  score Int @default(0) intent String @default("COLD") stage String @default("NEW")
+  data Json? createdAt DateTime @default(now()) updatedAt DateTime @updatedAt
+  @@unique([workspaceId, phone])
+}
+model Conversation {
+  id String @id @default(cuid())
+  workspaceId String
+  workspace Workspace @relation(fields:[workspaceId], references:[id])
+  channel String externalId String
+  messages Json @default("[]") status String @default("OPEN")
+  createdAt DateTime @default(now())
+  @@unique([workspaceId, channel, externalId])
+}
+model Connection {
+  id String @id @default(cuid())
+  workspaceId String
+  workspace Workspace @relation(fields:[workspaceId], references:[id])
+  type String credentials Json isActive Boolean @default(true)
+}
